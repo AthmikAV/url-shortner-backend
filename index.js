@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import userRouter from "./routes/user.routes.js"
 import cookieParser from "cookie-parser"; 
-
+import { authenticationMiddleware } from "./middlewares/auth.middleware.js";
 
 const app = express();
 app.use(express.json());
@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use('/user', userRouter);
 
-app.get('/home', (req, res) => {
+app.get('/home',authenticationMiddleware, (req, res) => {
     res.status(200).json({
         message:"You are in home page"
     })
