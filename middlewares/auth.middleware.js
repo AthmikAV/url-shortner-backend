@@ -12,6 +12,13 @@ export function authenticationMiddleware(req, res, next) {
 
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
+        
+
+         if (!decodedToken || !decodedToken.id) {
+                return res.status(401).json({
+                    error: "You must login to access resource"
+                });
+        }
         req.user = decodedToken;
         next();
 
@@ -20,4 +27,4 @@ export function authenticationMiddleware(req, res, next) {
             message: "Invalid token"
         })
     }
-}
+};

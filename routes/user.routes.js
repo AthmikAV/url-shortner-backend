@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import db from "../db/index.js";
-import userTable from "../models/user.model.js";
+import {userTable} from "../models/user.model.js";
 import { getUserByEmail } from "../services/user.service.js";
 import { signupPostRequestBodySchema } from "../validation/request.validation.js";
 import { loginPostRequestBodySchema } from "../validation/request.validation.js"
@@ -106,7 +106,9 @@ router.post("/login", async (req, res) => {
 router.post("/logout", async (req, res) => {
     res.clearCookie("token");
     return res.status(200).json({
-        message:"You are logged out"
+        message: "You are logged out"
     })
-})
+});
+
+
 export default router;
