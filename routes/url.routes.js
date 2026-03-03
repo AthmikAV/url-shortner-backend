@@ -4,7 +4,7 @@ import { authenticationMiddleware } from "../middlewares/auth.middleware.js";
 import { shortenPostRequestBodySchema } from "../validation/request.validation.js";
 import { insertUrlToUrlTable } from "../services/urls.services.js";
 import { urlsTable } from "../models/url.model.js";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import db from "../db/index.js"
 
 router.post("/shorten", authenticationMiddleware, async function (req, res) {
@@ -32,14 +32,27 @@ router.get('/codes', authenticationMiddleware, async function (req, res) {
     try {
         const codes = await db.select().from(urlsTable).where(eq(urlsTable.userId, req.user.id));
 
-    return res.json({ codes });
+        return res.json({ codes });
     } catch (error) {
         return res.status(500).json({
             success: false,
             message: "Something went wrong"
         });
     }
-})
+});
+
+router.delete('/:id', authenticationMiddleware, async function (req, res) {
+    try {
+        const id = req.params.id;
+        await db.delete(urlsTable).where(and(eq(urlsTable.id, id), eq(urlsTable.userId, req.user.id)));
+        return res.status(200).json({
+            deleted: true
+        })
+    } catch (error) {
+        
+    }
+});
+
 
 router.get("/:shortCode", async function (req, res) {
     try {
